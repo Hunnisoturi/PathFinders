@@ -1,17 +1,19 @@
 <script setup lang="ts">
-const props = defineProps({
-  col: Number,
-  row: Number,
-  isFinish: Boolean,
-  isStart: Boolean,
-  isWall: Boolean
-})
+import { defineProps } from 'vue';
+import type { Node } from '../types/types';
+
+const props = defineProps<Node>();
 </script>
 
 <template>
   <div
     :id="`node-${row}-${col}`"
-    :class="{ 'node-finish': isFinish, 'node-start': isStart, 'node-wall': isWall }"
+    :class="{
+      'node-finish': props.isFinish,
+      'node-start': props.isStart,
+      'node-wall': props.isWall
+    }"
+    class="node"
   ></div>
 </template>
 
@@ -19,7 +21,7 @@ const props = defineProps({
 .node {
   width: 25px;
   height: 25px;
-  outline: 1px sold rgb(175, 216, 248);
+  outline: 1px solid rgb(175, 216, 248);
   display: inline-block;
 }
 
