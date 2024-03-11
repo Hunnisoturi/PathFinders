@@ -60,3 +60,17 @@ const getUnvisitedNeighbors = (node: Node, grid: Node[][]) => {
 
   return neighbors.filter((neighbor) => !neighbor.isVisited);
 };
+
+export const getNodesInShortestPathOrder = (finishNode: Node) => {
+  const nodesInShortestPathOrder = [];
+
+  let currentNode = finishNode;
+  while (currentNode !== null) {
+    nodesInShortestPathOrder.unshift(currentNode);
+    if (currentNode.previousNode !== null) {
+      currentNode = currentNode.previousNode;
+    }
+  }
+
+  return nodesInShortestPathOrder;
+};

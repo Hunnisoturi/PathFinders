@@ -1,9 +1,9 @@
 import type { Node } from '../types/types';
 
-const START_NODE_COL: number = 10;
-const START_NODE_ROW: number = 15;
-const FINISH_NODE_ROW: number = 10;
-const FINISH_NODE_COL: number = 35;
+export const START_NODE_COL: number = 10;
+export const START_NODE_ROW: number = 15;
+export const FINISH_NODE_ROW: number = 10;
+export const FINISH_NODE_COL: number = 35;
 
 export const getInitialGrid = (rows: number, cols: number): Node[][] => {
   const grid = [];
@@ -24,6 +24,9 @@ export const createNode = (col: number, row: number): Node => {
     row,
     isStart: row === START_NODE_ROW && col === START_NODE_COL,
     isFinish: row === FINISH_NODE_ROW && col === FINISH_NODE_COL,
-    isWall: false
+    isWall: false,
+    distance: Infinity,
+    isVisited: false,
+    previousNode: null
   };
 };
