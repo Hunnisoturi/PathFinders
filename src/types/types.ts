@@ -1,7 +1,10 @@
 export interface Node {
-  col: Number;
-  row: Number;
-  isFinish: Boolean;
-  isStart: Boolean;
-  isWall: Boolean;
+  col: number;
+  row: number;
+  isFinish: boolean;
+  isStart: boolean;
+  isWall: boolean;
+  distance: number;
+  isVisited: boolean;
+  previousNode: Node | null;
 }

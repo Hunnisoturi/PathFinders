@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { watch, ref } from 'vue';
+import { ref } from 'vue';
 import GridNode from './components/GridNode.vue';
 import { getInitialGrid } from './utils/utils';
 
@@ -29,6 +29,6 @@ console.log('grid', grid.value);
 }
 
 .row {
-  display: inline-block;
+  display: flex;
 }
 </style>
