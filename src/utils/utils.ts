@@ -18,6 +18,19 @@ export const getInitialGrid = (rows: number, cols: number): Node[][] => {
   return grid;
 };
 
+export const getNewGridWithWallToggled = (grid: Node[][], row: number, col: number) => {
+  const newGrid = grid.slice();
+  const node = newGrid[row][col];
+
+  const newNode = {
+    ...node,
+    isWall: !node.isWall
+  };
+
+  newGrid[row][col] = newNode;
+  return newGrid;
+};
+
 export const createNode = (col: number, row: number): Node => {
   return {
     col,
@@ -25,8 +38,8 @@ export const createNode = (col: number, row: number): Node => {
     isStart: row === START_NODE_ROW && col === START_NODE_COL,
     isFinish: row === FINISH_NODE_ROW && col === FINISH_NODE_COL,
     isWall: false,
-    distance: Infinity,
     isVisited: false,
+    distance: Infinity,
     previousNode: null
   };
 };

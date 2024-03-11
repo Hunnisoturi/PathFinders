@@ -14,8 +14,8 @@ export const djikstra = (grid: Node[][], startNode: Node, finishNode: Node) => {
     const closestNode = unvisitedNodes.shift();
 
     if (closestNode) {
-      if (closestNode?.isWall) continue;
-      if (closestNode?.distance === Infinity) return visitedNodesInOrder;
+      if (closestNode.isWall) continue;
+      if (closestNode.distance === Infinity) return visitedNodesInOrder;
 
       closestNode.isVisited = true;
       visitedNodesInOrder.push(closestNode);
@@ -64,12 +64,10 @@ const getUnvisitedNeighbors = (node: Node, grid: Node[][]) => {
 export const getNodesInShortestPathOrder = (finishNode: Node) => {
   const nodesInShortestPathOrder = [];
 
-  let currentNode = finishNode;
+  let currentNode: Node | null = finishNode;
   while (currentNode !== null) {
     nodesInShortestPathOrder.unshift(currentNode);
-    if (currentNode.previousNode !== null) {
-      currentNode = currentNode.previousNode;
-    }
+    currentNode = currentNode.previousNode;
   }
 
   return nodesInShortestPathOrder;
