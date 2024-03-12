@@ -47,7 +47,7 @@ const animateShortestPath = (nodesInShortestPathOrder: Node[]) => {
   }
 };
 
-const visualize = () => {
+const visualizeDjikstra = () => {
   const startNode = grid.value[START_NODE_ROW][START_NODE_COL];
   const finishNode = grid.value[FINISH_NODE_ROW][FINISH_NODE_COL];
 
@@ -74,7 +74,7 @@ const onMouseUp = () => {
 </script>
 
 <template>
-  <button @click="visualize">Visualize</button>
+  <button @click="visualizeDjikstra">Visualize</button>
   <div class="grid">
     <div v-for="(row, index) in grid" :key="index" class="row">
       <div v-for="(node, nodeIndex) in row" :key="nodeIndex">
@@ -94,6 +94,7 @@ const onMouseUp = () => {
         />
       </div>
     </div>
+    <p></p>
   </div>
 </template>
 

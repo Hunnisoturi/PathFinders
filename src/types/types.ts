@@ -8,3 +8,11 @@ export interface Node {
   isVisited: boolean;
   previousNode: Node | null;
 }
+
+export interface AstarNode {
+  col: number;
+  row: number;
+  cost: number;
+  heuristic: number;
+  previous: AstarNode;
+}
