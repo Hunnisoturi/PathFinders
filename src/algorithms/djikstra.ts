@@ -1,8 +1,9 @@
 // Performs Djikstra's algorithm, returns *all* nodes in the order
 // in which they were visited.
 import type { Node } from '../types/types';
+import type { Ref } from 'vue';
 
-export const djikstra = (grid: Node[][], startNode: Node, finishNode: Node) => {
+export const djikstra = (grid: Ref<Node[][]>, startNode: Node, finishNode: Node) => {
   const visitedNodesInOrder: Node[] = [];
   startNode.distance = 0;
 

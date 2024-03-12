@@ -1,6 +1,6 @@
 import type { AstarNode } from '../types/types';
 
-const astar = (start: AstarNode, goal: AstarNode, grid: AstarNode[][]) => {
+export const astar = (start: AstarNode, goal: AstarNode, grid: AstarNode[][]) => {
   const openSet: AstarNode[] = [start];
   const closedSet: AstarNode[] = [];
 
