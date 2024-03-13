@@ -1,18 +1,19 @@
-export interface Node {
-  col: number;
+interface Node {
   row: number;
+  col: number;
   isFinish: boolean;
   isStart: boolean;
   isWall: boolean;
-  distance: number;
   isVisited: boolean;
-  previousNode: Node | null;
 }
 
-export interface AstarNode {
-  col: number;
-  row: number;
+export interface DjikstraNode extends Node {
+  distance: number;
+  previous: DjikstraNode | null;
+}
+
+export interface AstarNode extends Node {
   cost: number;
   heuristic: number;
-  previous: AstarNode;
+  previous: AstarNode | null;
 }

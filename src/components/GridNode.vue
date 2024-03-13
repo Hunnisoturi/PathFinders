@@ -1,28 +1,29 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends DjikstraNode | AstarNode">
 import { defineProps } from 'vue';
-import type { Node } from '../types/types';
+import type { DjikstraNode, AstarNode } from '../types/types';
 
-interface MouseProps {
+const props = defineProps<{
+  node: T;
   isMousePressed: boolean;
   onMouseDown: (row: number, col: number) => void;
   onMouseUp: () => void;
   onMouseEnter: (row: number, col: number) => void;
-}
+}>();
 
-const props = defineProps<Node & MouseProps>();
+const { node } = props;
 </script>
 
 <template>
   <div
-    :id="`node-${props.row}-${props.col}`"
+    :id="`node-${node.row}-${node.col}`"
     :class="{
-      'node-finish': props.isFinish,
-      'node-start': props.isStart,
-      'node-wall': props.isWall
+      'node-finish': node.isFinish,
+      'node-start': node.isStart,
+      'node-wall': node.isWall
     }"
     class="node"
-    @mousedown="() => onMouseDown(props.row, props.col)"
-    @mouseenter="() => props.onMouseEnter(props.row, props.col)"
+    @mousedown="() => onMouseDown(node.row, node.col)"
+    @mouseenter="() => props.onMouseEnter(node.row, node.col)"
     @mouseup="() => props.onMouseUp()"
   ></div>
 </template>

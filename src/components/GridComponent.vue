@@ -1,16 +1,16 @@
-<script setup lang="ts" generic="T extends Node">
+<script setup lang="ts" generic="T extends DjikstraNode, U extends AstarNode">
 import GridNode from './GridNode.vue';
 import { ref } from 'vue';
 import type { Ref } from 'vue';
-import type { Node } from '../types/types';
+import type { DjikstraNode, AstarNode } from '../types/types';
 import { getNewGridWithWallToggled } from '../utils/utils';
 import { START_NODE_COL, START_NODE_ROW, FINISH_NODE_ROW, FINISH_NODE_COL } from '../utils/utils';
 import { djikstra, getNodesInShortestPathOrder } from '../algorithms/djikstra';
 
-// TODO: make GridNode generic to accept both types of nodes: make GridNode generic to accept both types of nodes
+type NodeType = T | U;
 
 const props = defineProps<{
-  grid: Ref<T[][]>;
+  grid: Ref<NodeType[][]>;
 }>();
 
 const { grid } = props;
@@ -18,8 +18,8 @@ const { grid } = props;
 const isMousePressed = ref<boolean>(false);
 
 const animateDjikstra = (
-  visitedNodesInOrder: Node[] | undefined,
-  nodesInShortestPathOrder: Node[]
+  visitedNodesInOrder: NodeType[] | undefined,
+  nodesInShortestPathOrder: NodeType[]
 ) => {
   if (visitedNodesInOrder) {
     for (let i = 0; i <= visitedNodesInOrder.length; i++) {
@@ -40,7 +40,7 @@ const animateDjikstra = (
   }
 };
 
-const animateShortestPath = (nodesInShortestPathOrder: Node[]) => {
+const animateShortestPath = (nodesInShortestPathOrder: NodeType[]) => {
   for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
     setTimeout(() => {
       const node = nodesInShortestPathOrder[i];
@@ -78,19 +78,12 @@ const onMouseUp = () => {
 </script>
 
 <template>
-  <button @click="visualizeDjikstra">Visualize</button>
-  <div class="grid.value">
-    <div v-for="(row, index) in grid.value" :key="index" class="row">
+  <v-btn @click="visualizeDjikstra" class="action-button">Visualize</v-btn>
+  <div class="grid">
+    <div v-for="(row, index) in grid" :key="index" class="row">
       <div v-for="(node, nodeIndex) in row" :key="nodeIndex">
         <GridNode
-          :col="node.col"
-          :row="node.row"
-          :is-wall="node.isWall"
-          :is-start="node.isStart"
-          :is-finish="node.isFinish"
-          :distance="node.distance"
-          :isVisited="node.isVisited"
-          :previous-node="node.previousNode"
+          :node="node"
           :is-mouse-pressed="isMousePressed"
           :on-mouse-down="() => onMouseDown(node.row, node.col)"
           :on-mouse-up="() => onMouseUp()"
@@ -102,11 +95,15 @@ const onMouseUp = () => {
 </template>
 
 <style scoped>
-.grid.value {
+.grid {
   margin: 100px 0 0;
 }
 
 .row {
   display: flex;
+}
+
+.action-button {
+  margin-top: 100px;
 }
 </style>

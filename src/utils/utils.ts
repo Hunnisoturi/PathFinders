@@ -1,24 +1,24 @@
-import type { Node } from '../types/types';
+import type { DjikstraNode, AstarNode } from '../types/types';
 
 export const START_NODE_COL: number = 10;
 export const START_NODE_ROW: number = 15;
 export const FINISH_NODE_ROW: number = 10;
 export const FINISH_NODE_COL: number = 35;
 
-export const getInitialGrid = (rows: number, cols: number): Node[][] => {
+export const getDjikstraGrid = (rows: number, cols: number): DjikstraNode[][] => {
   const grid = [];
 
   for (let row = 0; row < rows; row++) {
     const currentRow = [];
     for (let col = 0; col < cols; col++) {
-      currentRow.push(createNode(col, row));
+      currentRow.push(createDjikstraNode(col, row));
     }
     grid.push(currentRow);
   }
   return grid;
 };
 
-export const getNewGridWithWallToggled = (grid: Node[][], row: number, col: number) => {
+export const getNewGridWithWallToggled = (grid: DjikstraNode[][], row: number, col: number) => {
   const newGrid = grid.slice();
   const node = newGrid[row][col];
 
@@ -31,7 +31,7 @@ export const getNewGridWithWallToggled = (grid: Node[][], row: number, col: numb
   return newGrid;
 };
 
-export const createNode = (col: number, row: number): Node => {
+export const createDjikstraNode = (col: number, row: number): DjikstraNode => {
   return {
     col,
     row,
@@ -40,6 +40,35 @@ export const createNode = (col: number, row: number): Node => {
     isWall: false,
     isVisited: false,
     distance: Infinity,
-    previousNode: null
+    previous: null
+  };
+};
+
+export const getAstarGrid = (rows: number, cols: number): AstarNode[][] => {
+  const grid = [];
+
+  for (let row = 0; row < rows; row++) {
+    const currentRow = [];
+
+    for (let col = 0; col < cols; col++) {
+      currentRow.push(createAstarNode(row, col));
+    }
+    grid.push(currentRow);
+  }
+
+  return grid;
+};
+
+export const createAstarNode = (row: number, col: number): AstarNode => {
+  return {
+    row,
+    col,
+    cost: 0,
+    heuristic: 0,
+    previous: null,
+    isStart: row === START_NODE_ROW && col === START_NODE_COL,
+    isFinish: row === FINISH_NODE_ROW && col === FINISH_NODE_COL,
+    isWall: false,
+    isVisited: false
   };
 };
