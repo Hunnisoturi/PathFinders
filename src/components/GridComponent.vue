@@ -2,7 +2,7 @@
 import GridNode from './GridNode.vue';
 import { ref, onMounted, watch } from 'vue';
 import type { Ref } from 'vue';
-import type { DjikstraNode, NodeType } from '../types/types';
+import type { DjikstraNode, AstarNode, NodeType } from '../types/types';
 import { getNewGridWithWallToggled, isDjikstra, getDjikstraGrid } from '../utils/utils';
 import { START_NODE_COL, START_NODE_ROW, FINISH_NODE_ROW, FINISH_NODE_COL } from '../utils/utils';
 import { djikstra, getNodesInShortestPathOrder } from '../algorithms/djikstra';
@@ -66,8 +66,8 @@ const visualizeDjikstra = () => {
     const startNode = grid.value[START_NODE_ROW][START_NODE_COL];
     const finishNode = grid.value[FINISH_NODE_ROW][FINISH_NODE_COL];
 
-    const visitedNodesInOrder = djikstra(grid as Ref<DjikstraNode[][]>, startNode, finishNode);
-    const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
+    const visitedNodesInOrder = djikstra(grid as Ref<DjikstraNode[][]>, startNode as DjikstraNode, finishNode as DjikstraNode);
+    const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode as DjikstraNode);
     animateDjikstra(visitedNodesInOrder, nodesInShortestPathOrder);
   }
 };
