@@ -1,8 +1,7 @@
 // Performs Djikstra's algorithm, returns *all* nodes in the order
 // in which they were visited.
-import type { DjikstraNode, NodeType } from '../types/types';
+import type { DjikstraNode } from '../types/types';
 import type { Ref } from 'vue';
-import { START_NODE_COL, START_NODE_ROW, FINISH_NODE_COL, FINISH_NODE_ROW } from '../utils/utils';
 
 export const djikstra = (
   grid: Ref<DjikstraNode[][]>,
@@ -77,24 +76,4 @@ export const getNodesInShortestPathOrder = (finishNode: DjikstraNode) => {
   }
 
   return nodesInShortestPathOrder;
-};
-
-export const animateShortestPath = (nodesInShortestPathOrder: NodeType[]) => {
-  for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
-    setTimeout(() => {
-      const node = nodesInShortestPathOrder[i];
-
-      const element = document.getElementById(`node-${node.row}-${node.col}`);
-      if (element) element.className = 'node node-shortest-path';
-    }, 50 * i);
-  }
-};
-
-export const visualizeDjikstra = (grid: Ref<NodeType[][]>) => {
-  const startNode = grid.value[START_NODE_ROW][START_NODE_COL];
-  const finishNode = grid.value[FINISH_NODE_ROW][FINISH_NODE_COL];
-
-  const visitedNodesInOrder = djikstra(grid, startNode, finishNode);
-  const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
-  animateDjikstra(visitedNodesInOrder, nodesInShortestPathOrder);
 };

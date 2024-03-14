@@ -5,6 +5,14 @@ export const START_NODE_ROW: number = 15;
 export const FINISH_NODE_ROW: number = 10;
 export const FINISH_NODE_COL: number = 35;
 
+export const isDjikstra = (obj: any): obj is DjikstraNode => {
+  return typeof obj.distance === 'number';
+};
+
+export const isAstar = (arr: any[][]): arr is AstarNode[][] => {
+  return typeof arr[0][0].cost === 'number';
+};
+
 export const getDjikstraGrid = (rows: number, cols: number): DjikstraNode[][] => {
   const grid = [];
 

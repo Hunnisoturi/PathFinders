@@ -1,22 +1,35 @@
 <script setup lang="ts" generic="T extends NodeType">
 import GridNode from './GridNode.vue';
-import { ref } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import type { Ref } from 'vue';
-import type { NodeType } from '../types/types';
-import { getNewGridWithWallToggled } from '../utils/utils';
-import { animateShortestPath } from '../algorithms/djikstra';
+import type { DjikstraNode, NodeType } from '../types/types';
+import { getNewGridWithWallToggled, isDjikstra, getDjikstraGrid } from '../utils/utils';
+import { START_NODE_COL, START_NODE_ROW, FINISH_NODE_ROW, FINISH_NODE_COL } from '../utils/utils';
+import { djikstra, getNodesInShortestPathOrder } from '../algorithms/djikstra';
+
+// TODO: make GridNode generic to accept both types of nodes: make GridNode generic to accept both types of nodes
 
 const props = defineProps<{
-  grid: Ref<NodeType[][]>;
+  grid: Ref<T[][]>;
 }>();
 
+const selectedAlg = "djikstra"
+
+onMounted(() => {
+  if (selectedAlg == 'djikstra') {
+    grid.value = getDjikstraGrid(20, 50) as T[][];
+  }
+});
+
 const { grid } = props;
+
+watch(grid, () => console.log('grid: ', grid.value));
 
 const isMousePressed = ref<boolean>(false);
 
 const animateDjikstra = (
-  visitedNodesInOrder: NodeType[] | undefined,
-  nodesInShortestPathOrder: NodeType[]
+  visitedNodesInOrder: DjikstraNode[] | undefined,
+  nodesInShortestPathOrder: DjikstraNode[]
 ) => {
   if (visitedNodesInOrder) {
     for (let i = 0; i <= visitedNodesInOrder.length; i++) {
@@ -37,10 +50,34 @@ const animateDjikstra = (
   }
 };
 
+const animateShortestPath = (nodesInShortestPathOrder: DjikstraNode[]) => {
+  for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
+    setTimeout(() => {
+      const node = nodesInShortestPathOrder[i];
+
+      const element = document.getElementById(`node-${node.row}-${node.col}`);
+      if (element) element.className = 'node node-shortest-path';
+    }, 50 * i);
+  }
+};
+
+const visualizeDjikstra = () => {
+  if (isDjikstra(grid.value[0][0])) {
+    const startNode = grid.value[START_NODE_ROW][START_NODE_COL];
+    const finishNode = grid.value[FINISH_NODE_ROW][FINISH_NODE_COL];
+
+    const visitedNodesInOrder = djikstra(grid as Ref<DjikstraNode[][]>, startNode, finishNode);
+    const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
+    animateDjikstra(visitedNodesInOrder, nodesInShortestPathOrder);
+  }
+};
+
 const onMouseDown = (row: number, col: number) => {
-  const newGrid = getNewGridWithWallToggled(grid.value, row, col);
-  grid.value = newGrid;
-  isMousePressed.value = true;
+  if (isDjikstra(grid.value)) {
+    const newGrid = getNewGridWithWallToggled(grid.value as DjikstraNode[][], row, col);
+    (grid.value as T[][]) = newGrid;
+    isMousePressed.value = true;
+  }
 };
 
 const onMouseEnter = (row: number, col: number) => {
@@ -55,12 +92,13 @@ const onMouseUp = () => {
 </script>
 
 <template>
-  <v-btn @click="visualizeDjikstra" class="action-button">Visualize</v-btn>
+  <v-btn @click="visualizeDjikstra" class="lmao">Visualize</v-btn>
   <div class="grid">
     <div v-for="(row, index) in grid" :key="index" class="row">
       <div v-for="(node, nodeIndex) in row" :key="nodeIndex">
         <GridNode
           :node="node"
+          :previous-node="node.previous"
           :is-mouse-pressed="isMousePressed"
           :on-mouse-down="() => onMouseDown(node.row, node.col)"
           :on-mouse-up="() => onMouseUp()"
@@ -80,7 +118,7 @@ const onMouseUp = () => {
   display: flex;
 }
 
-.action-button {
+.lmao {
   margin-top: 100px;
 }
 </style>
