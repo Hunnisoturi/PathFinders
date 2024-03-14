@@ -17,3 +17,5 @@ export interface AstarNode extends Node {
   heuristic: number;
   previous: AstarNode | null;
 }
+
+export type NodeType = DjikstraNode | AstarNode;

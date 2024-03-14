@@ -1,13 +1,10 @@
-<script setup lang="ts" generic="T extends DjikstraNode, U extends AstarNode">
+<script setup lang="ts" generic="T extends NodeType">
 import GridNode from './GridNode.vue';
 import { ref } from 'vue';
 import type { Ref } from 'vue';
-import type { DjikstraNode, AstarNode } from '../types/types';
+import type { NodeType } from '../types/types';
 import { getNewGridWithWallToggled } from '../utils/utils';
-import { START_NODE_COL, START_NODE_ROW, FINISH_NODE_ROW, FINISH_NODE_COL } from '../utils/utils';
-import { djikstra, getNodesInShortestPathOrder } from '../algorithms/djikstra';
-
-type NodeType = T | U;
+import { animateShortestPath } from '../algorithms/djikstra';
 
 const props = defineProps<{
   grid: Ref<NodeType[][]>;
@@ -38,26 +35,6 @@ const animateDjikstra = (
       }, 10 * i);
     }
   }
-};
-
-const animateShortestPath = (nodesInShortestPathOrder: NodeType[]) => {
-  for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
-    setTimeout(() => {
-      const node = nodesInShortestPathOrder[i];
-
-      const element = document.getElementById(`node-${node.row}-${node.col}`);
-      if (element) element.className = 'node node-shortest-path';
-    }, 50 * i);
-  }
-};
-
-const visualizeDjikstra = () => {
-  const startNode = grid.value[START_NODE_ROW][START_NODE_COL];
-  const finishNode = grid.value[FINISH_NODE_ROW][FINISH_NODE_COL];
-
-  const visitedNodesInOrder = djikstra(grid, startNode, finishNode);
-  const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
-  animateDjikstra(visitedNodesInOrder, nodesInShortestPathOrder);
 };
 
 const onMouseDown = (row: number, col: number) => {
