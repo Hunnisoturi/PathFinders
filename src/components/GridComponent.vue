@@ -119,7 +119,7 @@ const visualize = () => {
 
 <template>
   <div>
-    <v-btn @click="visualize" class="visualize-button">Visualize</v-btn>
+    <v-btn @click="visualize" class="visualize-button">Visualize {{ selectedAlg }}</v-btn>
   </div>
   <div class="grid">
     <div v-for="(row, index) in grid" :key="index" class="row">
