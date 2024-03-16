@@ -1,4 +1,6 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import type { Ref } from 'vue';
+</script>
 
 <template>
   <v-app-bar>

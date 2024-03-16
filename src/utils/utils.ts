@@ -1,8 +1,9 @@
 import type { DjikstraNode, AstarNode, NodeType } from '../types/types';
+import { v4 as uuid } from 'uuid';
 
 export const START_NODE_COL: number = 10;
 export const START_NODE_ROW: number = 15;
-export const FINISH_NODE_ROW: number = 2;
+export const FINISH_NODE_ROW: number = 9;
 export const FINISH_NODE_COL: number = 40;
 
 export const isDjikstra = (obj: any): obj is DjikstraNode => {
@@ -39,13 +40,21 @@ export const getNewGridWithWallToggled = (grid: NodeType[][], row: number, col: 
   return newGrid;
 };
 
+const nodeIsWall = () => {
+  return Math.random() < 0.25 ? true : false;
+};
+
 export const createDjikstraNode = (col: number, row: number): DjikstraNode => {
+  const isWall = nodeIsWall();
+  const isStart = row === START_NODE_ROW && col === START_NODE_COL;
+  const isFinish = row === FINISH_NODE_ROW && col === FINISH_NODE_COL;
   return {
+    id: uuid(),
     col,
     row,
     isStart: row === START_NODE_ROW && col === START_NODE_COL,
     isFinish: row === FINISH_NODE_ROW && col === FINISH_NODE_COL,
-    isWall: false,
+    isWall: isWall && !isStart && !isFinish,
     isVisited: false,
     distance: Infinity,
     previous: null
@@ -68,7 +77,12 @@ export const getAstarGrid = (rows: number, cols: number): AstarNode[][] => {
 };
 
 export const createAstarNode = (row: number, col: number): AstarNode => {
+  const isWall = nodeIsWall();
+  const isStart = row === START_NODE_ROW && col === START_NODE_COL;
+  const isFinish = row === FINISH_NODE_ROW && col === FINISH_NODE_COL;
+
   return {
+    id: uuid(),
     row,
     col,
     cost: 0,
@@ -76,7 +90,7 @@ export const createAstarNode = (row: number, col: number): AstarNode => {
     previous: null,
     isStart: row === START_NODE_ROW && col === START_NODE_COL,
     isFinish: row === FINISH_NODE_ROW && col === FINISH_NODE_COL,
-    isWall: false,
+    isWall: isWall && !isStart && !isFinish,
     isVisited: false
   };
 };

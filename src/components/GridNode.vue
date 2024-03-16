@@ -1,12 +1,8 @@
-<script setup lang="ts" generic="T extends DjikstraNode | AstarNode">
-import type { DjikstraNode, AstarNode } from '../types/types';
+<script setup lang="ts" generic="T extends NodeType">
+import type { NodeType } from '../types/types';
 
 const props = defineProps<{
   node: T;
-  isMousePressed: boolean;
-  onMouseDown: (row: number, col: number) => void;
-  onMouseUp: () => void;
-  onMouseEnter: (row: number, col: number) => void;
 }>();
 
 const { node } = props;
@@ -21,9 +17,6 @@ const { node } = props;
       'node-wall': node.isWall
     }"
     class="node"
-    @mousedown="() => onMouseDown(node.row, node.col)"
-    @mouseenter="() => props.onMouseEnter(node.row, node.col)"
-    @mouseup="() => props.onMouseUp()"
   ></div>
 </template>
 
