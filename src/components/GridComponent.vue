@@ -9,8 +9,9 @@ import { djikstra, getNodesInShortestPathOrder } from '../algorithms/djikstra';
 import { astar } from '../algorithms/astar';
 
 const grid: Ref<T[][]> = ref([]);
-
 const selectedAlg: Ref<SelectionItem> = ref({ title: 'Djikstra', value: 'djikstra' });
+const done: Ref<boolean> = ref(false);
+const running: Ref<boolean> = ref(false);
 
 interface SelectionItem {
   title: string;
@@ -21,9 +22,7 @@ const algs: SelectionItem[] = [
   { title: 'A*', value: 'astar' }
 ];
 
-onMounted(() => {
-  grid.value = getAstarGrid(20, 50) as T[][];
-});
+onMounted(() => (grid.value = getDjikstraGrid(20, 50) as T[][]));
 
 watch(selectedAlg, () => {
   if (selectedAlg.value.value === 'astar') {
@@ -63,6 +62,8 @@ const animateShortestPath = (nodesInShortestPathOrder: T[]) => {
       if (element) element.className = 'node node-shortest-path';
     }, 50 * i);
   }
+  done.value = true;
+  running.value = false;
 };
 
 const visualizeDjikstra = () => {
@@ -94,11 +95,19 @@ const visualizeAstar = () => {
 };
 
 const visualize = () => {
+  running.value = true;
   if (selectedAlg.value.value === 'djikstra') {
     visualizeDjikstra();
   } else if (selectedAlg.value.value === 'astar') {
     visualizeAstar();
   }
+};
+
+const reset = () => {
+  if (selectedAlg.value.value === 'djikstra') grid.value = getDjikstraGrid(20, 50) as T[][];
+  if (selectedAlg.value.value === 'astar') grid.value = getAstarGrid(20, 50) as T[][];
+  done.value = false;
+  running.value = false;
 };
 </script>
 
@@ -113,7 +122,8 @@ const visualize = () => {
       item-value="value"
       return-object
     />
-    <v-btn @click="visualize">Visualize {{ selectedAlg.title }}</v-btn>
+    <v-btn @click="visualize" :disabled="done || running">Visualize {{ selectedAlg.title }}</v-btn>
+    <v-btn @click="reset" :disabled="running" variant="outlined">Reset grid</v-btn>
   </div>
   <div class="grid">
     <div v-for="(row, rowIndex) in grid" class="row" :key="rowIndex">
@@ -134,6 +144,21 @@ const visualize = () => {
 }
 
 .selection {
+  display: flex;
+  flex-direction: row;
   margin-top: 100px;
+  margin-left: 20px;
+  margin-right: 20px;
+  gap: 8px;
+  align-items: center;
+  width: 700px;
+}
+
+.alg-select {
+  width: 400px;
+}
+
+.custom-button {
+  margin-bottom: 22px;
 }
 </style>
