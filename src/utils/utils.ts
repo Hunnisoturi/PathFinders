@@ -1,16 +1,16 @@
-import type { DjikstraNode, AstarNode } from '../types/types';
+import type { DjikstraNode, AstarNode, NodeType } from '../types/types';
 
 export const START_NODE_COL: number = 10;
 export const START_NODE_ROW: number = 15;
-export const FINISH_NODE_ROW: number = 10;
-export const FINISH_NODE_COL: number = 35;
+export const FINISH_NODE_ROW: number = 2;
+export const FINISH_NODE_COL: number = 40;
 
 export const isDjikstra = (obj: any): obj is DjikstraNode => {
   return typeof obj.distance === 'number';
 };
 
-export const isAstar = (arr: any[][]): arr is AstarNode[][] => {
-  return typeof arr[0][0].cost === 'number';
+export const isAstar = (obj: any): obj is AstarNode[][] => {
+  return typeof obj.cost === 'number';
 };
 
 export const getDjikstraGrid = (rows: number, cols: number): DjikstraNode[][] => {
@@ -26,7 +26,7 @@ export const getDjikstraGrid = (rows: number, cols: number): DjikstraNode[][] =>
   return grid;
 };
 
-export const getNewGridWithWallToggled = (grid: DjikstraNode[][], row: number, col: number) => {
+export const getNewGridWithWallToggled = (grid: NodeType[][], row: number, col: number) => {
   const newGrid = grid.slice();
   const node = newGrid[row][col];
 

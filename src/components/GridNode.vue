@@ -1,5 +1,4 @@
 <script setup lang="ts" generic="T extends DjikstraNode | AstarNode">
-import { defineProps } from 'vue';
 import type { DjikstraNode, AstarNode } from '../types/types';
 
 const props = defineProps<{

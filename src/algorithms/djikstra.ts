@@ -1,6 +1,6 @@
 // Performs Djikstra's algorithm, returns *all* nodes in the order
 // in which they were visited.
-import type { DjikstraNode } from '../types/types';
+import type { DjikstraNode, NodeType } from '../types/types';
 import type { Ref } from 'vue';
 
 export const djikstra = (
@@ -66,10 +66,10 @@ const getUnvisitedNeighbors = (node: DjikstraNode, grid: Ref<DjikstraNode[][]>) 
   return neighbors.filter((neighbor) => !neighbor.isVisited);
 };
 
-export const getNodesInShortestPathOrder = (finishNode: DjikstraNode) => {
+export const getNodesInShortestPathOrder = (finishNode: NodeType) => {
   const nodesInShortestPathOrder = [];
 
-  let currentNode: DjikstraNode | null = finishNode;
+  let currentNode: NodeType | null = finishNode;
   while (currentNode !== null) {
     nodesInShortestPathOrder.unshift(currentNode);
     currentNode = currentNode.previous;

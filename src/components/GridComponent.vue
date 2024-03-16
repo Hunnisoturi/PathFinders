@@ -1,36 +1,33 @@
 <script setup lang="ts" generic="T extends NodeType">
 import GridNode from './GridNode.vue';
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import type { Ref } from 'vue';
-import type { DjikstraNode, AstarNode, NodeType } from '../types/types';
-import { getNewGridWithWallToggled, isDjikstra, getDjikstraGrid } from '../utils/utils';
+import type { AstarNode, DjikstraNode, NodeType } from '../types/types';
+import {
+  getNewGridWithWallToggled,
+  isDjikstra,
+  getDjikstraGrid,
+  isAstar,
+  getAstarGrid
+} from '../utils/utils';
 import { START_NODE_COL, START_NODE_ROW, FINISH_NODE_ROW, FINISH_NODE_COL } from '../utils/utils';
 import { djikstra, getNodesInShortestPathOrder } from '../algorithms/djikstra';
+import { astar } from '../algorithms/astar';
 
 // TODO: make GridNode generic to accept both types of nodes: make GridNode generic to accept both types of nodes
 
-const props = defineProps<{
-  grid: Ref<T[][]>;
-}>();
+const grid: Ref<T[][]> = ref([]);
 
-const selectedAlg = "djikstra"
+const selectedAlg: string = 'astar';
 
 onMounted(() => {
-  if (selectedAlg == 'djikstra') {
-    grid.value = getDjikstraGrid(20, 50) as T[][];
-  }
+  grid.value = getAstarGrid(20, 50) as T[][];
+  //grid.value = getDjikstraGrid(20, 50) as T[][];
 });
-
-const { grid } = props;
-
-watch(grid, () => console.log('grid: ', grid.value));
 
 const isMousePressed = ref<boolean>(false);
 
-const animateDjikstra = (
-  visitedNodesInOrder: DjikstraNode[] | undefined,
-  nodesInShortestPathOrder: DjikstraNode[]
-) => {
+const animateAlg = (visitedNodesInOrder: T[] | undefined, nodesInShortestPathOrder: T[]) => {
   if (visitedNodesInOrder) {
     for (let i = 0; i <= visitedNodesInOrder.length; i++) {
       if (i === visitedNodesInOrder.length) {
@@ -50,7 +47,7 @@ const animateDjikstra = (
   }
 };
 
-const animateShortestPath = (nodesInShortestPathOrder: DjikstraNode[]) => {
+const animateShortestPath = (nodesInShortestPathOrder: T[]) => {
   for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
     setTimeout(() => {
       const node = nodesInShortestPathOrder[i];
@@ -66,33 +63,64 @@ const visualizeDjikstra = () => {
     const startNode = grid.value[START_NODE_ROW][START_NODE_COL];
     const finishNode = grid.value[FINISH_NODE_ROW][FINISH_NODE_COL];
 
-    const visitedNodesInOrder = djikstra(grid as Ref<DjikstraNode[][]>, startNode as DjikstraNode, finishNode as DjikstraNode);
+    const visitedNodesInOrder = djikstra(
+      grid as Ref<DjikstraNode[][]>,
+      startNode as DjikstraNode,
+      finishNode as DjikstraNode
+    );
+
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode as DjikstraNode);
-    animateDjikstra(visitedNodesInOrder, nodesInShortestPathOrder);
+    animateAlg(visitedNodesInOrder as T[], nodesInShortestPathOrder as T[]);
+  }
+};
+
+const visualizeAstar = () => {
+  if (isAstar(grid.value[0][0])) {
+    const startNode = grid.value[START_NODE_ROW][START_NODE_COL];
+    const finishNode = grid.value[FINISH_NODE_ROW][FINISH_NODE_COL];
+
+    const visitedNodesInOrder = astar(
+      startNode as AstarNode,
+      finishNode as AstarNode,
+      grid as Ref<AstarNode[][]>
+    );
+
+    const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode as AstarNode);
+    animateAlg(visitedNodesInOrder as T[], nodesInShortestPathOrder as T[]);
   }
 };
 
 const onMouseDown = (row: number, col: number) => {
-  if (isDjikstra(grid.value)) {
-    const newGrid = getNewGridWithWallToggled(grid.value as DjikstraNode[][], row, col);
-    (grid.value as T[][]) = newGrid;
-    isMousePressed.value = true;
-  }
+  const newGrid = getNewGridWithWallToggled(grid.value, row, col);
+  grid.value = newGrid;
+  isMousePressed.value = true;
 };
 
 const onMouseEnter = (row: number, col: number) => {
-  if (isMousePressed.value === false) return;
-  const newGrid = getNewGridWithWallToggled(grid.value, row, col);
-  grid.value = newGrid;
+  if (isDjikstra(grid.value)) {
+    if (isMousePressed.value === false) return;
+    const newGrid = getNewGridWithWallToggled(grid.value as DjikstraNode[][], row, col);
+    (grid.value as DjikstraNode[][]) = newGrid;
+  }
 };
 
 const onMouseUp = () => {
   isMousePressed.value = false;
 };
+
+const visualize = () => {
+  if (selectedAlg === 'djikstra') {
+    visualizeDjikstra();
+  } else if (selectedAlg === 'astar') {
+    visualizeAstar();
+  }
+};
 </script>
 
 <template>
-  <v-btn @click="visualizeDjikstra" class="lmao">Visualize</v-btn>
+  <div>
+    <v-btn @click="visualize" class="visualize-button">Visualize</v-btn>
+  </div>
   <div class="grid">
     <div v-for="(row, index) in grid" :key="index" class="row">
       <div v-for="(node, nodeIndex) in row" :key="nodeIndex">
@@ -118,7 +146,7 @@ const onMouseUp = () => {
   display: flex;
 }
 
-.lmao {
+.visualize-button {
   margin-top: 100px;
 }
 </style>
